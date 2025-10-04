@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { PropertyInputs, CalculationResults } from '../types/property';
+import type { PropertyInputs, CalculationResults } from '../types/property';
 import { calculateMortgage } from '../lib/calculations/mortgage';
 import { calculateYearlyProjections, calculateReturnMetrics } from '../lib/calculations/cashflow';
 import { calculateOpportunityCost } from '../lib/calculations/opportunity';

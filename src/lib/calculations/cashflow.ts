@@ -1,4 +1,4 @@
-import { PropertyInputs, YearlyData, MortgageResult, ReturnMetrics } from '../../types/property';
+import type { PropertyInputs, YearlyData, MortgageResult, ReturnMetrics } from '../../types/property';
 import { calculateYearlyPrincipalInterest } from './mortgage';
 
 /**
@@ -28,7 +28,12 @@ export function calculateYearlyProjections(
       mortgage.amortizationSchedule,
       year
     );
-    const mortgagePayment = principalPaid + interestPaid;
+
+    // For existing properties with user-specified payment, use that instead of calculated
+    // This is important when isPITI is true and payment includes taxes/insurance
+    const mortgagePayment = inputs.mode === 'existing' && inputs.monthlyPayment > 0
+      ? inputs.monthlyPayment * 12
+      : principalPaid + interestPaid;
 
     // Income calculations
     let grossRent: number;
@@ -59,8 +64,9 @@ export function calculateYearlyProjections(
     let capex: number;
 
     if (inputs.incomeMode === 'detailed') {
-      propertyTax = inputs.propertyTax * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
-      insurance = inputs.insurance * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
+      // If PITI, property tax and insurance are included in mortgage payment, so don't double-count
+      propertyTax = inputs.isPITI ? 0 : inputs.propertyTax * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
+      insurance = inputs.isPITI ? 0 : inputs.insurance * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
       hoaFees = inputs.hoaFees * 12 * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
       utilities = inputs.utilities * 12 * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
 
@@ -70,6 +76,7 @@ export function calculateYearlyProjections(
       capex = currentRent * 12 * (inputs.capexPercent / 100);
     } else {
       // Net income mode - minimal expenses (already accounted for in net income)
+      // If PITI, property tax and insurance are included in mortgage payment
       propertyTax = inputs.isPITI ? 0 : inputs.propertyTax * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
       insurance = inputs.isPITI ? 0 : inputs.insurance * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
       hoaFees = 0;

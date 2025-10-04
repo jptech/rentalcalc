@@ -1,4 +1,4 @@
-import { PropertyInputs, YearlyData, OpportunityCostAnalysis, WealthProjection } from '../../types/property';
+import type { PropertyInputs, YearlyData, OpportunityCostAnalysis, WealthProjection } from '../../types/property';
 
 /**
  * Calculate opportunity cost analysis: Hold vs Sell

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CalculationResults } from '../../types/property';
+import type { CalculationResults } from '../../types/property';
 import { CashFlowChart } from './CashFlowChart';
 import { EquityChart } from './EquityChart';
 import { ComparisonChart } from './ComparisonChart';

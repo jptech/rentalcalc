@@ -1,4 +1,4 @@
-import { AmortizationEntry, MortgageResult } from '../../types/property';
+import type { AmortizationEntry, MortgageResult } from '../../types/property';
 
 /**
  * Calculate monthly mortgage payment using standard amortization formula

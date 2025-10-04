@@ -276,14 +276,27 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
               />
             </>
           ) : (
-            <Input
-              label="Net Monthly Income"
-              type="number"
-              prefix="$"
-              value={inputs.netMonthlyIncome}
-              onChange={(e) => updateInput('netMonthlyIncome', parseFloat(e.target.value) || 0)}
-              tooltip="Monthly income after management and maintenance"
-            />
+            <>
+              <Input
+                label="Net Monthly Income"
+                type="number"
+                prefix="$"
+                value={inputs.netMonthlyIncome}
+                onChange={(e) => updateInput('netMonthlyIncome', parseFloat(e.target.value) || 0)}
+                tooltip="Monthly income after management and maintenance"
+                helpText="Income after property management fees and maintenance"
+              />
+
+              <Input
+                label="Utilities & Bills"
+                type="number"
+                prefix="$"
+                value={inputs.utilities}
+                onChange={(e) => updateInput('utilities', parseFloat(e.target.value) || 0)}
+                tooltip="Monthly utilities and bills paid by owner"
+                helpText="This will be subtracted from net income"
+              />
+            </>
           )}
         </CollapsibleSection>
 
@@ -297,7 +310,7 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
               value={inputs.propertyTax}
               onChange={(e) => updateInput('propertyTax', parseFloat(e.target.value) || 0)}
               tooltip="Annual property tax"
-              helpText="per year"
+              helpText={inputs.isPITI ? "per year (excluded if PITI checked)" : "per year"}
             />
 
             <Input
@@ -307,7 +320,7 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
               value={inputs.insurance}
               onChange={(e) => updateInput('insurance', parseFloat(e.target.value) || 0)}
               tooltip="Annual insurance premium"
-              helpText="per year"
+              helpText={inputs.isPITI ? "per year (excluded if PITI checked)" : "per year"}
             />
 
             <Input

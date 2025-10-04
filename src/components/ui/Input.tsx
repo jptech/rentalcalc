@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, ReactNode } from 'react';
+import type { InputHTMLAttributes, ReactNode } from 'react';
 import { Info } from 'lucide-react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

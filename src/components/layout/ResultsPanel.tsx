@@ -1,4 +1,4 @@
-import { CalculationResults } from '../../types/property';
+import type { CalculationResults } from '../../types/property';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/Tabs';
 import { InsightsTab } from '../insights/InsightsTab';
 import { ChartsTab } from '../charts/ChartsTab';

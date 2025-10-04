@@ -8,8 +8,9 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Cell,
 } from 'recharts';
-import { YearlyData } from '../../types/property';
+import type { YearlyData } from '../../types/property';
 import { formatCurrency } from '../../lib/formatters';
 
 interface CashFlowChartProps {
@@ -22,6 +23,11 @@ export function CashFlowChart({ data }: CashFlowChartProps) {
     cashFlow: Math.round(year.cashFlow),
     cumulativeCashFlow: Math.round(year.cumulativeCashFlow),
   }));
+
+  // Custom bar color based on positive/negative
+  const getBarColor = (value: number) => {
+    return value >= 0 ? '#10b981' : '#ef4444'; // green for positive, red for negative
+  };
 
   return (
     <div className="h-96">
@@ -53,17 +59,23 @@ export function CashFlowChart({ data }: CashFlowChartProps) {
           />
           <Bar
             dataKey="cashFlow"
-            fill="#3b82f6"
             name="Annual Cash Flow"
             radius={[4, 4, 0, 0]}
-          />
+          >
+            {chartData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={getBarColor(entry.cashFlow)}
+              />
+            ))}
+          </Bar>
           <Line
             type="monotone"
             dataKey="cumulativeCashFlow"
-            stroke="#10b981"
+            stroke="#3b82f6"
             strokeWidth={3}
             name="Cumulative Cash Flow"
-            dot={{ r: 4, fill: '#10b981' }}
+            dot={{ r: 4, fill: '#3b82f6' }}
           />
         </ComposedChart>
       </ResponsiveContainer>

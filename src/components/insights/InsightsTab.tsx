@@ -1,5 +1,5 @@
 import { DollarSign, TrendingUp, Home, Scale, AlertTriangle } from 'lucide-react';
-import { CalculationResults } from '../../types/property';
+import type { CalculationResults } from '../../types/property';
 import { MetricCard } from './MetricCard';
 import { formatCurrency, formatPercent } from '../../lib/formatters';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/Card';

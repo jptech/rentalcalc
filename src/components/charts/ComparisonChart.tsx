@@ -8,7 +8,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { OpportunityCostAnalysis } from '../../types/property';
+import type { OpportunityCostAnalysis } from '../../types/property';
 import { formatCurrency } from '../../lib/formatters';
 
 interface ComparisonChartProps {

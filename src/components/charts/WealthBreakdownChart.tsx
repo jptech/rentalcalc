@@ -8,7 +8,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { YearlyData } from '../../types/property';
+import type { YearlyData } from '../../types/property';
 import { formatCurrency } from '../../lib/formatters';
 
 interface WealthBreakdownChartProps {
