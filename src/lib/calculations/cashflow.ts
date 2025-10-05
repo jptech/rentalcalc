@@ -12,6 +12,13 @@ export function calculateYearlyProjections(
   let cumulativeCashFlow = 0;
   let cumulativeTaxSavings = 0;
 
+  // For existing PITI properties, calculate the constant P+I portion (excluding year 1 T&I)
+  // This is the base mortgage payment that doesn't grow with T&I
+  let constantPIPayment = 0;
+  if (inputs.mode === 'existing' && inputs.isPITI && inputs.monthlyPayment > 0) {
+    constantPIPayment = (inputs.monthlyPayment * 12) - inputs.propertyTax - inputs.insurance;
+  }
+
   for (let year = 1; year <= inputs.analysisPeriod; year++) {
     const growthFactor = year - 1;
 
@@ -32,16 +39,6 @@ export function calculateYearlyProjections(
     // Determine mortgage term for this scenario
     const mortgageTerm = inputs.mode === 'new' ? inputs.loanTerm : inputs.remainingTerm;
     const isMortgagePaidOff = year > mortgageTerm;
-
-    // For existing properties with user-specified payment, use that instead of calculated
-    // This is important when isPITI is true and payment includes taxes/insurance
-    // BUT: after mortgage is paid off, payment should be 0
-    let mortgagePayment = 0;
-    if (!isMortgagePaidOff) {
-      mortgagePayment = inputs.mode === 'existing' && inputs.monthlyPayment > 0
-        ? inputs.monthlyPayment * 12
-        : principalPaid + interestPaid;
-    }
 
     // Income calculations
     let grossRent: number;
@@ -97,6 +94,27 @@ export function calculateYearlyProjections(
       capex = 0;
     }
 
+    // Calculate mortgage payment
+    let mortgagePayment = 0;
+    if (!isMortgagePaidOff) {
+      if (inputs.mode === 'existing' && inputs.monthlyPayment > 0) {
+        if (inputs.isPITI) {
+          // For PITI: constant P+I portion + growing T+I
+          mortgagePayment = constantPIPayment + growingPropertyTax + growingInsurance;
+        } else {
+          // Not PITI: just use the specified payment as-is
+          mortgagePayment = inputs.monthlyPayment * 12;
+        }
+      } else {
+        // New property: use calculated P+I from amortization
+        mortgagePayment = principalPaid + interestPaid;
+        if (inputs.isPITI) {
+          // For new property PITI: add growing T+I to P+I
+          mortgagePayment += growingPropertyTax + growingInsurance;
+        }
+      }
+    }
+
     // If PITI, only non-T&I expenses count toward operating expenses
     // Tax and insurance are paid via the mortgage payment
     const totalExpenses = inputs.isPITI
@@ -107,12 +125,8 @@ export function calculateYearlyProjections(
     const noi = effectiveIncome - totalExpenses;
 
     // Cash flow (after mortgage payment)
-    // If PITI, the growing tax and insurance need to be subtracted separately
-    // since they're not included in totalExpenses but are real costs
-    let cashFlow = noi - mortgagePayment;
-    if (inputs.isPITI && !isMortgagePaidOff) {
-      cashFlow -= (growingPropertyTax + growingInsurance);
-    }
+    // For PITI, T+I are already included in mortgagePayment, so no need to subtract again
+    const cashFlow = noi - mortgagePayment;
     cumulativeCashFlow += cashFlow;
 
     // Tax calculations
