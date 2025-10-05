@@ -71,10 +71,14 @@ export function calculateYearlyProjections(
     let management: number;
     let capex: number;
 
+    // Calculate growing tax and insurance (even if PITI, for accurate tracking)
+    const growingPropertyTax = inputs.propertyTax * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
+    const growingInsurance = inputs.insurance * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
+
     if (inputs.incomeMode === 'detailed') {
-      // If PITI, property tax and insurance are included in mortgage payment, so don't double-count
-      propertyTax = inputs.isPITI ? 0 : inputs.propertyTax * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
-      insurance = inputs.isPITI ? 0 : inputs.insurance * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
+      // Always track the actual values for tax and insurance
+      propertyTax = growingPropertyTax;
+      insurance = growingInsurance;
       hoaFees = inputs.hoaFees * 12 * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
       utilities = inputs.utilities * 12 * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
 
@@ -84,9 +88,8 @@ export function calculateYearlyProjections(
       capex = currentRent * 12 * (inputs.capexPercent / 100);
     } else {
       // Net income mode - minimal expenses (already accounted for in net income)
-      // If PITI, property tax and insurance are included in mortgage payment
-      propertyTax = inputs.isPITI ? 0 : inputs.propertyTax * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
-      insurance = inputs.isPITI ? 0 : inputs.insurance * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
+      propertyTax = growingPropertyTax;
+      insurance = growingInsurance;
       hoaFees = 0;
       utilities = inputs.utilities * 12 * Math.pow(1 + inputs.expenseGrowthRate / 100, growthFactor);
       maintenance = 0;
@@ -94,18 +97,29 @@ export function calculateYearlyProjections(
       capex = 0;
     }
 
-    const totalExpenses = propertyTax + insurance + hoaFees + utilities + maintenance + management + capex;
+    // If PITI, only non-T&I expenses count toward operating expenses
+    // Tax and insurance are paid via the mortgage payment
+    const totalExpenses = inputs.isPITI
+      ? hoaFees + utilities + maintenance + management + capex
+      : propertyTax + insurance + hoaFees + utilities + maintenance + management + capex;
 
     // Net Operating Income (before debt service)
     const noi = effectiveIncome - totalExpenses;
 
     // Cash flow (after mortgage payment)
-    const cashFlow = noi - mortgagePayment;
+    // If PITI, the growing tax and insurance need to be subtracted separately
+    // since they're not included in totalExpenses but are real costs
+    let cashFlow = noi - mortgagePayment;
+    if (inputs.isPITI && !isMortgagePaidOff) {
+      cashFlow -= (growingPropertyTax + growingInsurance);
+    }
     cumulativeCashFlow += cashFlow;
 
     // Tax calculations
     const depreciationDeduction = (inputs.propertyValue * (inputs.buildingValuePercent / 100)) / inputs.depreciationPeriod;
-    const deductibleExpenses = totalExpenses + interestPaid + depreciationDeduction;
+    // For tax purposes, always include property tax and insurance in deductions
+    const actualTotalExpenses = propertyTax + insurance + hoaFees + utilities + maintenance + management + capex;
+    const deductibleExpenses = actualTotalExpenses + interestPaid + depreciationDeduction;
     const taxableIncome = effectiveIncome - deductibleExpenses;
     const taxSavings = taxableIncome < 0 ? Math.abs(taxableIncome) * (inputs.taxBracket / 100) : 0;
     cumulativeTaxSavings += taxSavings;

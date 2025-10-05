@@ -2,6 +2,7 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import type { SensitivityAnalysis } from '../../types/property';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/Card';
 import { formatCurrency, formatPercent } from '../../lib/formatters';
+import { SensitivityRangeChart } from '../charts/SensitivityRangeChart';
 
 interface SensitivityTabProps {
   sensitivity: SensitivityAnalysis;
@@ -140,6 +141,22 @@ export function SensitivityTab({ sensitivity }: SensitivityTabProps) {
           </CardContent>
         </Card>
       </div>
+
+      {/* Wealth Projection Range Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Wealth Projection with Confidence Interval</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SensitivityRangeChart sensitivity={sensitivity} />
+          <div className="mt-4 text-sm text-slate-600">
+            <p>
+              The shaded blue area represents the confidence interval between worst and best case scenarios.
+              The solid blue line shows the base case projection, while the dashed lines indicate the range boundaries.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Detailed Comparison Table */}
       <Card>

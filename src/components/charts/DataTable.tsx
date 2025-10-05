@@ -29,10 +29,15 @@ export function DataTable({ data }: DataTableProps) {
                   <th className="px-4 py-3 text-right font-semibold text-slate-700">Cumulative CF</th>
                   <th className="px-4 py-3 text-right font-semibold text-slate-700">Tax Savings</th>
                   <th className="px-4 py-3 text-right font-semibold text-slate-700">Total Wealth</th>
+                  <th className="px-4 py-3 text-right font-semibold text-slate-700">YoY Gain</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {data.map((year, index) => (
+                {data.map((year, index) => {
+                  const previousWealth = index > 0 ? data[index - 1].totalWealth : 0;
+                  const yoyGain = year.totalWealth - previousWealth;
+
+                  return (
                   <tr
                     key={year.year}
                     className={`hover:bg-slate-50 transition-colors ${
@@ -74,8 +79,14 @@ export function DataTable({ data }: DataTableProps) {
                     <td className="px-4 py-3 text-right tabular-nums font-semibold text-slate-900">
                       {formatCurrency(year.totalWealth, 0)}
                     </td>
+                    <td className={`px-4 py-3 text-right tabular-nums font-medium ${
+                      yoyGain >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                    }`}>
+                      {index === 0 ? '—' : formatCurrency(yoyGain, 0)}
+                    </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
