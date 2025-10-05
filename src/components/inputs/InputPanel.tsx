@@ -3,7 +3,8 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '../ui/Card';
 import { Input, Select } from '../ui/Input';
 import { Slider } from '../ui/Slider';
-import type { PropertyInputs, PropertyType } from '../../types/property';
+import { RangeInput } from '../ui/RangeInput';
+import type { PropertyInputs, PropertyType, RangeValue } from '../../types/property';
 import { PROPERTY_DEFAULTS } from '../../types/property';
 
 interface InputPanelProps {
@@ -152,14 +153,18 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
                 />
               </div>
 
-              <Input
+              <RangeInput
                 label="Interest Rate"
-                type="number"
-                step="0.1"
-                suffix="%"
                 value={inputs.interestRate}
-                onChange={(e) => updateInput('interestRate', parseFloat(e.target.value) || 0)}
+                range={inputs.interestRateRange}
+                onChange={(val) => updateInput('interestRate', val)}
+                onRangeChange={(range) => updateInput('interestRateRange', range)}
+                min={0}
+                max={15}
+                step={0.1}
+                suffix="%"
                 tooltip="Annual interest rate on the mortgage"
+                helpText="Enable range to model rate uncertainty"
               />
 
               <Input
@@ -262,12 +267,16 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
 
           {inputs.incomeMode === 'detailed' ? (
             <>
-              <Input
+              <RangeInput
                 label="Monthly Rent"
-                type="number"
-                prefix="$"
                 value={inputs.monthlyRent}
-                onChange={(e) => updateInput('monthlyRent', parseFloat(e.target.value) || 0)}
+                range={inputs.monthlyRentRange}
+                onChange={(val) => updateInput('monthlyRent', val)}
+                onRangeChange={(range) => updateInput('monthlyRentRange', range)}
+                min={0}
+                max={20000}
+                step={50}
+                suffix="$"
                 tooltip="Expected monthly rental income"
               />
 
@@ -303,22 +312,30 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
             </>
           ) : (
             <>
-              <Input
+              <RangeInput
                 label="Net Monthly Income"
-                type="number"
-                prefix="$"
                 value={inputs.netMonthlyIncome}
-                onChange={(e) => updateInput('netMonthlyIncome', parseFloat(e.target.value) || 0)}
+                range={inputs.netMonthlyIncomeRange}
+                onChange={(val) => updateInput('netMonthlyIncome', val)}
+                onRangeChange={(range) => updateInput('netMonthlyIncomeRange', range)}
+                min={0}
+                max={15000}
+                step={50}
+                suffix="$"
                 tooltip="Monthly income after management and maintenance"
                 helpText="Income after property management fees and maintenance"
               />
 
-              <Input
+              <RangeInput
                 label="Utilities & Bills"
-                type="number"
-                prefix="$"
                 value={inputs.utilities}
-                onChange={(e) => updateInput('utilities', parseFloat(e.target.value) || 0)}
+                range={inputs.utilitiesRange}
+                onChange={(val) => updateInput('utilities', val)}
+                onRangeChange={(range) => updateInput('utilitiesRange', range)}
+                min={0}
+                max={1000}
+                step={10}
+                suffix="$"
                 tooltip="Monthly utilities and bills paid by owner"
                 helpText="This will be subtracted from net income"
               />
@@ -422,35 +439,44 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
             ))}
           </div>
 
-          <Input
+          <RangeInput
             label="Property Appreciation"
-            type="number"
-            step="0.1"
-            suffix="%"
             value={inputs.appreciationRate}
-            onChange={(e) => updateInput('appreciationRate', parseFloat(e.target.value) || 0)}
+            range={inputs.appreciationRange}
+            onChange={(val) => updateInput('appreciationRate', val)}
+            onRangeChange={(range) => updateInput('appreciationRange', range)}
+            min={-5}
+            max={20}
+            step={0.1}
+            suffix="%"
             tooltip="Expected annual property value growth"
             helpText="Historical average: 3-4%"
           />
 
-          <Input
+          <RangeInput
             label="Rent Growth"
-            type="number"
-            step="0.1"
-            suffix="%"
             value={inputs.rentGrowthRate}
-            onChange={(e) => updateInput('rentGrowthRate', parseFloat(e.target.value) || 0)}
+            range={inputs.rentGrowthRange}
+            onChange={(val) => updateInput('rentGrowthRate', val)}
+            onRangeChange={(range) => updateInput('rentGrowthRange', range)}
+            min={0}
+            max={15}
+            step={0.1}
+            suffix="%"
             tooltip="Expected annual rent increase"
             helpText="Typical: 2-3%"
           />
 
-          <Input
+          <RangeInput
             label="Expense Growth"
-            type="number"
-            step="0.1"
-            suffix="%"
             value={inputs.expenseGrowthRate}
-            onChange={(e) => updateInput('expenseGrowthRate', parseFloat(e.target.value) || 0)}
+            range={inputs.expenseGrowthRange}
+            onChange={(val) => updateInput('expenseGrowthRate', val)}
+            onRangeChange={(range) => updateInput('expenseGrowthRange', range)}
+            min={0}
+            max={10}
+            step={0.1}
+            suffix="%"
             tooltip="Expected annual expense increase"
             helpText="Typically matches inflation: 2-3%"
           />
@@ -488,13 +514,16 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
             helpText="Typical: 80% building, 20% land"
           />
 
-          <Input
+          <RangeInput
             label="Alternative Return"
-            type="number"
-            step="0.1"
-            suffix="%"
             value={inputs.alternativeReturn}
-            onChange={(e) => updateInput('alternativeReturn', parseFloat(e.target.value) || 0)}
+            range={inputs.alternativeReturnRange}
+            onChange={(val) => updateInput('alternativeReturn', val)}
+            onRangeChange={(range) => updateInput('alternativeReturnRange', range)}
+            min={0}
+            max={20}
+            step={0.1}
+            suffix="%"
             tooltip="Expected return if investing elsewhere"
             helpText="S&P 500 historical: ~7%"
           />

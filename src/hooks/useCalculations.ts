@@ -3,6 +3,7 @@ import type { PropertyInputs, CalculationResults } from '../types/property';
 import { calculateMortgage } from '../lib/calculations/mortgage';
 import { calculateYearlyProjections, calculateReturnMetrics } from '../lib/calculations/cashflow';
 import { calculateOpportunityCost } from '../lib/calculations/opportunity';
+import { calculateSensitivity } from '../lib/calculations/sensitivity';
 
 /**
  * Main calculation hook with memoization
@@ -53,6 +54,29 @@ export function useCalculations(inputs: PropertyInputs): CalculationResults {
     return calculateOpportunityCost(inputs, yearlyData);
   }, [inputs, yearlyData]);
 
+  // Calculate sensitivity analysis if ranges are enabled
+  const sensitivity = useMemo(() => {
+    return calculateSensitivity(inputs);
+  }, [
+    inputs.appreciationRange,
+    inputs.rentGrowthRange,
+    inputs.expenseGrowthRange,
+    inputs.alternativeReturnRange,
+    inputs.interestRateRange,
+    inputs.monthlyRentRange,
+    inputs.netMonthlyIncomeRange,
+    inputs.utilitiesRange,
+    // Include other inputs that affect calculations
+    inputs.propertyValue,
+    inputs.downPayment,
+    inputs.monthlyRent,
+    inputs.netMonthlyIncome,
+    inputs.utilities,
+    inputs.analysisPeriod,
+    inputs.incomeMode,
+    inputs.mode,
+  ]);
+
   return {
     mortgage,
     yearlyData,
@@ -60,5 +84,6 @@ export function useCalculations(inputs: PropertyInputs): CalculationResults {
     opportunityCost,
     totalInvestment,
     inputs, // Pass inputs through for reference in components
+    sensitivity,
   };
 }

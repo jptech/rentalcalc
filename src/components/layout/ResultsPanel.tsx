@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/Tabs';
 import { InsightsTab } from '../insights/InsightsTab';
 import { ChartsTab } from '../charts/ChartsTab';
 import { DataTable } from '../charts/DataTable';
+import { SensitivityTab } from '../insights/SensitivityTab';
 import { Card } from '../ui/Card';
 
 interface ResultsPanelProps {
@@ -10,12 +11,17 @@ interface ResultsPanelProps {
 }
 
 export function ResultsPanel({ results }: ResultsPanelProps) {
+  const hasSensitivity = results.sensitivity?.enabled;
+
   return (
     <Card className="min-h-[600px]">
       <Tabs defaultValue="insights">
         <TabsList className="px-6 pt-4">
           <TabsTrigger value="insights">📊 Insights</TabsTrigger>
           <TabsTrigger value="charts">📈 Charts</TabsTrigger>
+          {hasSensitivity && (
+            <TabsTrigger value="sensitivity">🎯 Sensitivity</TabsTrigger>
+          )}
           <TabsTrigger value="data">📋 Data Table</TabsTrigger>
         </TabsList>
 
@@ -27,6 +33,12 @@ export function ResultsPanel({ results }: ResultsPanelProps) {
           <TabsContent value="charts">
             <ChartsTab results={results} />
           </TabsContent>
+
+          {hasSensitivity && results.sensitivity && (
+            <TabsContent value="sensitivity">
+              <SensitivityTab sensitivity={results.sensitivity} />
+            </TabsContent>
+          )}
 
           <TabsContent value="data">
             <DataTable data={results.yearlyData} />

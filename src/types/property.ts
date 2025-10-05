@@ -7,6 +7,14 @@ export type IncomeMode = 'detailed' | 'net';
 // Property types with different default characteristics
 export type PropertyType = 'SFH' | 'Duplex' | 'Triplex' | 'Fourplex';
 
+// Range value type for sensitivity analysis
+export interface RangeValue {
+  enabled: boolean;
+  min: number;
+  max: number;
+  base: number; // The primary/expected value
+}
+
 // Main property input interface
 export interface PropertyInputs {
   // Property Details
@@ -55,6 +63,16 @@ export interface PropertyInputs {
   buildingValuePercent: number; // Percentage (default 80%)
   alternativeReturn: number; // Annual percentage for opportunity cost
   sellingCosts: number; // Percentage of sale price
+
+  // Sensitivity Analysis - Range values for key metrics
+  appreciationRange?: RangeValue;
+  rentGrowthRange?: RangeValue;
+  expenseGrowthRange?: RangeValue;
+  alternativeReturnRange?: RangeValue;
+  interestRateRange?: RangeValue;
+  monthlyRentRange?: RangeValue;
+  netMonthlyIncomeRange?: RangeValue;
+  utilitiesRange?: RangeValue;
 }
 
 // Mortgage calculation result
@@ -157,6 +175,26 @@ export interface CalculationResults {
   opportunityCost: OpportunityCostAnalysis;
   totalInvestment: number; // Down payment + closing costs
   inputs: PropertyInputs; // Include user inputs for reference in components
+  sensitivity?: SensitivityAnalysis; // Optional sensitivity analysis if ranges enabled
+}
+
+// Sensitivity analysis results
+export interface SensitivityAnalysis {
+  enabled: boolean;
+  scenarios: {
+    best: ScenarioResult;
+    base: ScenarioResult;
+    worst: ScenarioResult;
+  };
+}
+
+// Individual scenario result for sensitivity
+export interface ScenarioResult {
+  label: string;
+  yearlyData: YearlyData[];
+  returnMetrics: ReturnMetrics;
+  finalWealth: number;
+  totalCashFlow: number;
 }
 
 // Default values for different property types
