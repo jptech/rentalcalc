@@ -1,5 +1,5 @@
 import { Calculator } from 'lucide-react';
-import { useState, ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 interface CalculationTooltipProps {
   value: number;

@@ -79,7 +79,7 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
     // When updating a range, sync the value field to match range.base
     if (key in rangeToValueMap && value?.base !== undefined) {
       const valueKey = rangeToValueMap[key as string];
-      updated[valueKey] = value.base;
+      (updated[valueKey] as any) = value.base;
     }
 
     // When updating a value that has a range enabled, sync range.base to match
@@ -99,13 +99,13 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
       const existingRange = inputs[rangeKey] as RangeValue | undefined;
       if (existingRange?.enabled) {
         // Update the range.base to match the new value
-        updated[rangeKey] = {
+        (updated[rangeKey] as any) = {
           ...existingRange,
           base: value,
           // Expand bounds if needed
           min: Math.min(existingRange.min, value),
           max: Math.max(existingRange.max, value),
-        } as any;
+        };
       }
     }
 
