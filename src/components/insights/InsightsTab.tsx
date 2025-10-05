@@ -9,7 +9,7 @@ interface InsightsTabProps {
 }
 
 export function InsightsTab({ results }: InsightsTabProps) {
-  const { yearlyData, returnMetrics, opportunityCost, totalInvestment } = results;
+  const { yearlyData, returnMetrics, opportunityCost, totalInvestment, inputs } = results;
 
   if (yearlyData.length === 0) {
     return (
@@ -151,7 +151,7 @@ export function InsightsTab({ results }: InsightsTabProps) {
                   {formatCurrency(opportunityCost.sellScenario.finalWealth, 0)}
                 </p>
                 <p className="text-xs text-slate-600 mt-1">
-                  At {formatPercent(results.yearlyData[0] ? returnMetrics.totalReturn : 0, 1)} return
+                  At {formatPercent(inputs.alternativeReturn, 1)} return
                 </p>
               </div>
             </div>
@@ -165,8 +165,8 @@ export function InsightsTab({ results }: InsightsTabProps) {
             )}
 
             <div className="text-xs text-slate-500 space-y-1">
-              <p>• Assumes {formatPercent(results.yearlyData[0] ? returnMetrics.totalReturn : 0, 1)} alternative investment return</p>
-              <p>• Selling costs: {formatPercent(yearlyData[0] ? 6 : 0)} of property value</p>
+              <p>• Assumes {formatPercent(inputs.alternativeReturn, 1)} alternative investment return</p>
+              <p>• Selling costs: {formatPercent(inputs.sellingCosts, 1)} of property value</p>
               <p>• Projections are estimates, not guarantees</p>
             </div>
           </div>

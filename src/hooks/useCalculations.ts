@@ -59,5 +59,6 @@ export function useCalculations(inputs: PropertyInputs): CalculationResults {
     returnMetrics,
     opportunityCost,
     totalInvestment,
+    inputs, // Pass inputs through for reference in components
   };
 }

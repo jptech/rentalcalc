@@ -29,11 +29,19 @@ export function calculateYearlyProjections(
       year
     );
 
+    // Determine mortgage term for this scenario
+    const mortgageTerm = inputs.mode === 'new' ? inputs.loanTerm : inputs.remainingTerm;
+    const isMortgagePaidOff = year > mortgageTerm;
+
     // For existing properties with user-specified payment, use that instead of calculated
     // This is important when isPITI is true and payment includes taxes/insurance
-    const mortgagePayment = inputs.mode === 'existing' && inputs.monthlyPayment > 0
-      ? inputs.monthlyPayment * 12
-      : principalPaid + interestPaid;
+    // BUT: after mortgage is paid off, payment should be 0
+    let mortgagePayment = 0;
+    if (!isMortgagePaidOff) {
+      mortgagePayment = inputs.mode === 'existing' && inputs.monthlyPayment > 0
+        ? inputs.monthlyPayment * 12
+        : principalPaid + interestPaid;
+    }
 
     // Income calculations
     let grossRent: number;

@@ -156,6 +156,7 @@ export interface CalculationResults {
   returnMetrics: ReturnMetrics;
   opportunityCost: OpportunityCostAnalysis;
   totalInvestment: number; // Down payment + closing costs
+  inputs: PropertyInputs; // Include user inputs for reference in components
 }
 
 // Default values for different property types
