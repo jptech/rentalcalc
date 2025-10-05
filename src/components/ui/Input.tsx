@@ -24,13 +24,13 @@ export function Input({
     <div className="space-y-1.5">
       {label && (
         <div className="flex items-center gap-2">
-          <label className="block text-xs uppercase tracking-wide text-slate-600 font-medium">
+          <label className="block text-xs uppercase tracking-wide text-slate-600 dark:text-slate-400 font-medium">
             {label}
           </label>
           {tooltip && (
             <div className="group relative">
-              <Info className="w-3.5 h-3.5 text-slate-400 cursor-help" />
-              <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-slate-900 text-white text-xs rounded shadow-lg z-10">
+              <Info className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 cursor-help" />
+              <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-slate-900 dark:bg-slate-700 text-white text-xs rounded shadow-lg z-10">
                 {tooltip}
               </div>
             </div>
@@ -40,7 +40,7 @@ export function Input({
 
       <div className="relative">
         {prefix && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none">
             {prefix}
           </span>
         )}
@@ -48,29 +48,30 @@ export function Input({
         <input
           className={`
             w-full px-3 py-2 border rounded-lg transition-all
-            focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-            disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed
+            bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100
+            focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400
+            disabled:bg-slate-50 dark:disabled:bg-slate-900 disabled:text-slate-500 dark:disabled:text-slate-600 disabled:cursor-not-allowed
             ${prefix ? 'pl-7' : ''}
             ${suffix ? 'pr-10' : ''}
-            ${error ? 'border-rose-500 focus:ring-rose-500 focus:border-rose-500' : 'border-slate-300'}
+            ${error ? 'border-rose-500 focus:ring-rose-500 focus:border-rose-500' : 'border-slate-300 dark:border-slate-600'}
             ${className}
           `}
           {...props}
         />
 
         {suffix && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none">
             {suffix}
           </span>
         )}
       </div>
 
       {error && (
-        <p className="text-xs text-rose-600">{error}</p>
+        <p className="text-xs text-rose-600 dark:text-rose-400">{error}</p>
       )}
 
       {helpText && !error && (
-        <p className="text-xs text-slate-500">{helpText}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">{helpText}</p>
       )}
     </div>
   );
@@ -95,13 +96,13 @@ export function Select({
     <div className="space-y-1.5">
       {label && (
         <div className="flex items-center gap-2">
-          <label className="block text-xs uppercase tracking-wide text-slate-600 font-medium">
+          <label className="block text-xs uppercase tracking-wide text-slate-600 dark:text-slate-400 font-medium">
             {label}
           </label>
           {tooltip && (
             <div className="group relative">
-              <Info className="w-3.5 h-3.5 text-slate-400 cursor-help" />
-              <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-slate-900 text-white text-xs rounded shadow-lg z-10">
+              <Info className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 cursor-help" />
+              <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-slate-900 dark:bg-slate-700 text-white text-xs rounded shadow-lg z-10">
                 {tooltip}
               </div>
             </div>
@@ -112,9 +113,10 @@ export function Select({
       <select
         className={`
           w-full px-3 py-2 border rounded-lg transition-all
-          focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-          disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed
-          ${error ? 'border-rose-500 focus:ring-rose-500 focus:border-rose-500' : 'border-slate-300'}
+          bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100
+          focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400
+          disabled:bg-slate-50 dark:disabled:bg-slate-900 disabled:text-slate-500 dark:disabled:text-slate-600 disabled:cursor-not-allowed
+          ${error ? 'border-rose-500 focus:ring-rose-500 focus:border-rose-500' : 'border-slate-300 dark:border-slate-600'}
           ${className}
         `}
         {...props}
@@ -123,7 +125,7 @@ export function Select({
       </select>
 
       {error && (
-        <p className="text-xs text-rose-600">{error}</p>
+        <p className="text-xs text-rose-600 dark:text-rose-400">{error}</p>
       )}
     </div>
   );

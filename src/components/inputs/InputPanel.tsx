@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle } from '../ui/Card';
 import { Input, Select } from '../ui/Input';
 import { Slider } from '../ui/Slider';
 import { RangeInput } from '../ui/RangeInput';
-import type { PropertyInputs, PropertyType } from '../../types/property';
+import type { PropertyInputs, PropertyType, RangeValue } from '../../types/property';
 import { PROPERTY_DEFAULTS } from '../../types/property';
 
 interface InputPanelProps {
@@ -22,21 +22,21 @@ function CollapsibleSection({ title, children, defaultOpen = true }: Collapsible
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="border-b border-slate-200 last:border-b-0">
+    <div className="border-b border-slate-200 dark:border-slate-700 last:border-b-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between py-3 px-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-200 group"
+        className="w-full flex items-center justify-between py-3 px-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent dark:hover:from-blue-900/20 dark:hover:to-transparent transition-all duration-200 group"
       >
-        <h4 className="text-sm font-semibold text-slate-900 group-hover:text-blue-700 transition-colors">{title}</h4>
+        <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">{title}</h4>
         {isOpen ? (
-          <ChevronUp className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+          <ChevronUp className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+          <ChevronDown className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
         )}
       </button>
       {isOpen && (
         <>
-          <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent mx-4" />
+          <div className="h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent mx-4" />
           <div className="px-4 pb-4 pt-3 space-y-4">{children}</div>
         </>
       )}
@@ -64,13 +64,58 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
       updated.vacancyRate = defaults.vacancy;
     }
 
+    // Sync range base values with corresponding value fields to avoid double state updates
+    const rangeToValueMap: Record<string, keyof PropertyInputs> = {
+      'appreciationRange': 'appreciationRate',
+      'rentGrowthRange': 'rentGrowthRate',
+      'expenseGrowthRange': 'expenseGrowthRate',
+      'interestRateRange': 'interestRate',
+      'monthlyRentRange': 'monthlyRent',
+      'netMonthlyIncomeRange': 'netMonthlyIncome',
+      'utilitiesRange': 'utilities',
+      'alternativeReturnRange': 'alternativeReturn',
+    };
+
+    // When updating a range, sync the value field to match range.base
+    if (key in rangeToValueMap && value?.base !== undefined) {
+      const valueKey = rangeToValueMap[key as string];
+      updated[valueKey] = value.base;
+    }
+
+    // When updating a value that has a range enabled, sync range.base to match
+    const valueToRangeMap: Record<string, keyof PropertyInputs> = {
+      'appreciationRate': 'appreciationRange',
+      'rentGrowthRate': 'rentGrowthRange',
+      'expenseGrowthRate': 'expenseGrowthRange',
+      'interestRate': 'interestRateRange',
+      'monthlyRent': 'monthlyRentRange',
+      'netMonthlyIncome': 'netMonthlyIncomeRange',
+      'utilities': 'utilitiesRange',
+      'alternativeReturn': 'alternativeReturnRange',
+    };
+
+    if (key in valueToRangeMap) {
+      const rangeKey = valueToRangeMap[key as string];
+      const existingRange = inputs[rangeKey] as RangeValue | undefined;
+      if (existingRange?.enabled) {
+        // Update the range.base to match the new value
+        updated[rangeKey] = {
+          ...existingRange,
+          base: value,
+          // Expand bounds if needed
+          min: Math.min(existingRange.min, value),
+          max: Math.max(existingRange.max, value),
+        } as any;
+      }
+    }
+
     onChange(updated);
   };
 
   return (
-    <Card className="max-h-[calc(100vh-8rem)] overflow-y-auto">
-      <CardHeader className="bg-gradient-to-r from-slate-50 to-white">
-        <CardTitle>Property Inputs</CardTitle>
+    <Card className="max-h-[calc(100vh-8rem)] overflow-y-auto bg-white dark:bg-slate-800">
+      <CardHeader className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-800">
+        <CardTitle className="text-slate-900 dark:text-slate-100">Property Inputs</CardTitle>
       </CardHeader>
 
       <div>
@@ -105,8 +150,8 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
               onClick={() => updateInput('mode', 'new')}
               className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
                 inputs.mode === 'new'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-sm'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
               }`}
             >
               New Purchase
@@ -115,8 +160,8 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
               onClick={() => updateInput('mode', 'existing')}
               className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
                 inputs.mode === 'existing'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-sm'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
               }`}
             >
               Existing Property
@@ -212,9 +257,9 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
                   id="isPITI"
                   checked={inputs.isPITI}
                   onChange={(e) => updateInput('isPITI', e.target.checked)}
-                  className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-slate-800"
                 />
-                <label htmlFor="isPITI" className="text-sm text-slate-700">
+                <label htmlFor="isPITI" className="text-sm text-slate-700 dark:text-slate-300">
                   Payment includes taxes & insurance (PITI)
                 </label>
               </div>
@@ -247,8 +292,8 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
               onClick={() => updateInput('incomeMode', 'detailed')}
               className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
                 inputs.incomeMode === 'detailed'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-sm'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
               }`}
             >
               Detailed
@@ -257,8 +302,8 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
               onClick={() => updateInput('incomeMode', 'net')}
               className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
                 inputs.incomeMode === 'net'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-sm'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
               }`}
             >
               Net Income
@@ -430,8 +475,8 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
                 onClick={() => updateInput('analysisPeriod', years)}
                 className={`flex-1 px-3 py-2 rounded-lg font-medium transition-all text-sm ${
                   inputs.analysisPeriod === years
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-sm'
+                    : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
                 }`}
               >
                 {years}yr

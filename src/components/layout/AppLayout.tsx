@@ -9,7 +9,7 @@ interface AppLayoutProps {
 
 export function AppLayout({ onReset, inputPanel, resultsPanel }: AppLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900">
       <Header onReset={onReset} />
 
       <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -28,9 +28,9 @@ export function AppLayout({ onReset, inputPanel, resultsPanel }: AppLayoutProps)
         </div>
       </main>
 
-      <footer className="bg-white border-t border-slate-200 py-4 mt-8">
+      <footer className="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 py-4 mt-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm text-slate-600">
+          <p className="text-center text-sm text-slate-600 dark:text-slate-400">
             For educational purposes only. Consult with qualified professionals before making investment decisions.
           </p>
         </div>

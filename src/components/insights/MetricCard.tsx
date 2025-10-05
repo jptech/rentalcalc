@@ -3,8 +3,8 @@ import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '../ui/Card';
 
 interface MetricCardProps {
-  title: string;
-  value: string | number;
+  title: string | ReactNode;
+  value: string | number | ReactNode;
   subtitle?: string;
   icon?: LucideIcon;
   trend?: {
@@ -32,19 +32,19 @@ export function MetricCard({
   };
 
   const textColors = {
-    default: 'text-blue-600',
-    success: 'text-emerald-600',
-    danger: 'text-rose-600',
-    warning: 'text-amber-600',
+    default: 'text-blue-600 dark:text-blue-400',
+    success: 'text-emerald-600 dark:text-emerald-400',
+    danger: 'text-rose-600 dark:text-rose-400',
+    warning: 'text-amber-600 dark:text-amber-400',
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group">
-      <div className={`h-1 bg-gradient-to-r ${variantStyles[variant]} group-hover:h-1.5 transition-all`} />
+    <Card className="hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group bg-white dark:bg-slate-800 overflow-visible">
+      <div className={`h-1 bg-gradient-to-r ${variantStyles[variant]} group-hover:h-1.5 transition-all rounded-t-lg`} />
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
-            <p className="text-xs uppercase tracking-wide text-slate-500 font-medium mb-1">
+            <p className="text-xs tracking-wide text-slate-500 dark:text-slate-400 font-medium mb-1">
               {title}
             </p>
             <p className={`text-3xl font-bold tabular-nums ${textColors[variant]}`}>
@@ -59,19 +59,19 @@ export function MetricCard({
         </div>
 
         {subtitle && (
-          <p className="text-sm text-slate-600 mb-2">{subtitle}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{subtitle}</p>
         )}
 
         {trend && (
           <div className="flex items-center text-sm">
-            <span className={trend.value >= 0 ? 'text-emerald-600' : 'text-rose-600'}>
+            <span className={trend.value >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}>
               {trend.value >= 0 ? '↑' : '↓'} {Math.abs(trend.value).toFixed(1)}%
             </span>
-            <span className="text-slate-500 ml-2">{trend.label}</span>
+            <span className="text-slate-500 dark:text-slate-400 ml-2">{trend.label}</span>
           </div>
         )}
 
-        {children && <div className="mt-3 pt-3 border-t border-slate-100">{children}</div>}
+        {children && <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">{children}</div>}
       </CardContent>
     </Card>
   );

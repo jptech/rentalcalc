@@ -11,12 +11,14 @@ import {
 } from 'recharts';
 import type { YearlyData } from '../../types/property';
 import { formatCurrency } from '../../lib/formatters';
+import { useChartTheme } from '../../hooks/useChartTheme';
 
 interface EquityChartProps {
   data: YearlyData[];
 }
 
 export function EquityChart({ data }: EquityChartProps) {
+  const theme = useChartTheme();
   const chartData = data.map((year) => ({
     year: `Year ${year.year}`,
     yearNum: year.year,
@@ -36,52 +38,45 @@ export function EquityChart({ data }: EquityChartProps) {
           {payoffYear && (
             <ReferenceLine
               x={payoffYear.year}
-              stroke="#10b981"
+              stroke={theme.colors.success}
               strokeDasharray="5 5"
               strokeWidth={2}
             >
-              <Label value="Mortgage Paid Off" position="top" fill="#10b981" fontSize={12} />
+              <Label value="Mortgage Paid Off" position="top" fill={theme.colors.success} fontSize={12} />
             </ReferenceLine>
           )}
           <defs>
             <linearGradient id="colorPropertyValue" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.2} />
-            </linearGradient>
-            <linearGradient id="colorLoanBalance" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#ef4444" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#ef4444" stopOpacity={0.2} />
+              <stop offset="5%" stopColor={theme.colors.primary} stopOpacity={0.8} />
+              <stop offset="95%" stopColor={theme.colors.primary} stopOpacity={0.2} />
             </linearGradient>
             <linearGradient id="colorEquity" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#10b981" stopOpacity={0.2} />
+              <stop offset="5%" stopColor={theme.colors.success} stopOpacity={0.8} />
+              <stop offset="95%" stopColor={theme.colors.success} stopOpacity={0.2} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke={theme.grid.stroke} />
           <XAxis
             dataKey="year"
-            tick={{ fill: '#64748b', fontSize: 12 }}
-            tickLine={{ stroke: '#cbd5e1' }}
+            tick={theme.axis.tick}
+            tickLine={theme.axis.tickLine}
           />
           <YAxis
-            tick={{ fill: '#64748b', fontSize: 12 }}
-            tickLine={{ stroke: '#cbd5e1' }}
+            tick={theme.axis.tick}
+            tickLine={theme.axis.tickLine}
             tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
           />
           <Tooltip
-            contentStyle={{
-              backgroundColor: 'white',
-              border: '1px solid #e2e8f0',
-              borderRadius: '8px',
-              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-            }}
+            contentStyle={theme.tooltip.contentStyle}
+            labelStyle={theme.tooltip.labelStyle}
+            itemStyle={theme.tooltip.itemStyle}
             formatter={(value: number) => formatCurrency(value)}
           />
           <Area
             type="monotone"
             dataKey="propertyValue"
             stackId="1"
-            stroke="#3b82f6"
+            stroke={theme.colors.primary}
             fill="url(#colorPropertyValue)"
             name="Property Value"
           />
@@ -89,7 +84,7 @@ export function EquityChart({ data }: EquityChartProps) {
             type="monotone"
             dataKey="equity"
             stackId="2"
-            stroke="#10b981"
+            stroke={theme.colors.success}
             fill="url(#colorEquity)"
             name="Equity"
           />

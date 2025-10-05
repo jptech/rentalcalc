@@ -1,5 +1,6 @@
 import { Home, RotateCcw, Keyboard } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { ThemeToggle } from '../ui/ThemeToggle';
 import { useState } from 'react';
 
 interface HeaderProps {
@@ -24,6 +25,8 @@ export function Header({ onReset }: HeaderProps) {
           </div>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle />
+
             <div className="relative hidden md:block">
               <Button
                 variant="ghost"
@@ -36,16 +39,16 @@ export function Header({ onReset }: HeaderProps) {
               </Button>
 
               {showShortcuts && (
-                <div className="absolute right-0 top-full mt-2 bg-white text-slate-900 rounded-lg shadow-xl p-4 w-64 z-50 animate-fadeIn">
+                <div className="absolute right-0 top-full mt-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-4 w-64 z-50 animate-fadeIn">
                   <h3 className="font-semibold mb-3 text-sm">Keyboard Shortcuts</h3>
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-600">Save</span>
-                      <kbd className="px-2 py-1 bg-slate-100 rounded border border-slate-300 font-mono">Ctrl+S</kbd>
+                      <span className="text-slate-600 dark:text-slate-400">Save</span>
+                      <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded border border-slate-300 dark:border-slate-600 font-mono">Ctrl+S</kbd>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-600">Reset</span>
-                      <kbd className="px-2 py-1 bg-slate-100 rounded border border-slate-300 font-mono">Ctrl+R</kbd>
+                      <span className="text-slate-600 dark:text-slate-400">Reset</span>
+                      <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded border border-slate-300 dark:border-slate-600 font-mono">Ctrl+R</kbd>
                     </div>
                   </div>
                 </div>

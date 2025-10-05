@@ -32,20 +32,20 @@ export function Slider({
       {label && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <label className="block text-xs uppercase tracking-wide text-slate-600 font-medium">
+            <label className="block text-xs uppercase tracking-wide text-slate-600 dark:text-slate-400 font-medium">
               {label}
             </label>
             {tooltip && (
               <div className="group relative">
-                <Info className="w-3.5 h-3.5 text-slate-400 cursor-help" />
-                <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-slate-900 text-white text-xs rounded shadow-lg z-10">
+                <Info className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 cursor-help" />
+                <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-slate-900 dark:bg-slate-700 text-white text-xs rounded shadow-lg z-10">
                   {tooltip}
                 </div>
               </div>
             )}
           </div>
           {showValue && (
-            <span className="text-sm font-medium text-blue-600 tabular-nums">
+            <span className="text-sm font-medium text-blue-600 dark:text-blue-400 tabular-nums">
               {value.toFixed(1)}{suffix}
             </span>
           )}
@@ -61,25 +61,29 @@ export function Slider({
           value={value}
           onChange={(e) => onChange(parseFloat(e.target.value))}
           className={`
-            w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+            w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer
+            focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900
             [&::-webkit-slider-thumb]:appearance-none
             [&::-webkit-slider-thumb]:w-4
             [&::-webkit-slider-thumb]:h-4
             [&::-webkit-slider-thumb]:rounded-full
             [&::-webkit-slider-thumb]:bg-blue-600
+            dark:[&::-webkit-slider-thumb]:bg-blue-500
             [&::-webkit-slider-thumb]:cursor-pointer
             [&::-webkit-slider-thumb]:transition-all
             [&::-webkit-slider-thumb]:hover:bg-blue-700
+            dark:[&::-webkit-slider-thumb]:hover:bg-blue-400
             [&::-webkit-slider-thumb]:hover:scale-110
             [&::-moz-range-thumb]:w-4
             [&::-moz-range-thumb]:h-4
             [&::-moz-range-thumb]:rounded-full
             [&::-moz-range-thumb]:bg-blue-600
+            dark:[&::-moz-range-thumb]:bg-blue-500
             [&::-moz-range-thumb]:border-0
             [&::-moz-range-thumb]:cursor-pointer
             [&::-moz-range-thumb]:transition-all
             [&::-moz-range-thumb]:hover:bg-blue-700
+            dark:[&::-moz-range-thumb]:hover:bg-blue-400
             ${className}
           `}
           style={{
@@ -89,8 +93,8 @@ export function Slider({
 
         {/* Range labels */}
         <div className="flex justify-between mt-1">
-          <span className="text-xs text-slate-400">{min}{suffix}</span>
-          <span className="text-xs text-slate-400">{max}{suffix}</span>
+          <span className="text-xs text-slate-400 dark:text-slate-500">{min}{suffix}</span>
+          <span className="text-xs text-slate-400 dark:text-slate-500">{max}{suffix}</span>
         </div>
       </div>
     </div>

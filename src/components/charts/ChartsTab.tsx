@@ -68,8 +68,8 @@ export function ChartsTab({ results }: ChartsTabProps) {
               onClick={() => setActiveChart(chart.id)}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 activeChart === chart.id
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+                  ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-sm'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
               }`}
             >
               {chart.label}
@@ -89,14 +89,14 @@ export function ChartsTab({ results }: ChartsTabProps) {
       </div>
 
       {/* Chart Display */}
-      <Card>
+      <Card className="bg-white dark:bg-slate-800">
         <CardContent className="p-6">
           {activeChart === 'cashflow' && (
             <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
                 Cash Flow Over Time
               </h3>
-              <p className="text-sm text-slate-600 mb-6">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
                 Annual cash flow and cumulative total over the analysis period.
               </p>
               <CashFlowChart data={results.yearlyData} />
@@ -105,10 +105,10 @@ export function ChartsTab({ results }: ChartsTabProps) {
 
           {activeChart === 'equity' && (
             <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
                 Equity Growth & Property Value
               </h3>
-              <p className="text-sm text-slate-600 mb-6">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
                 Track equity buildup through principal paydown and property appreciation.
               </p>
               <EquityChart data={results.yearlyData} />
@@ -117,10 +117,10 @@ export function ChartsTab({ results }: ChartsTabProps) {
 
           {activeChart === 'comparison' && (
             <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
                 Hold vs. Sell Comparison
               </h3>
-              <p className="text-sm text-slate-600 mb-6">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
                 Compare wealth accumulation: holding the property vs. selling and investing proceeds.
               </p>
               <ComparisonChart analysis={results.opportunityCost} />
@@ -129,10 +129,10 @@ export function ChartsTab({ results }: ChartsTabProps) {
 
           {activeChart === 'breakdown' && (
             <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
                 Wealth Accumulation Breakdown
               </h3>
-              <p className="text-sm text-slate-600 mb-6">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
                 Sources of wealth: equity, cumulative cash flow, and tax savings over time.
               </p>
               <WealthBreakdownChart data={results.yearlyData} />

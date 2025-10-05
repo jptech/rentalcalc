@@ -11,12 +11,14 @@ import {
 } from 'recharts';
 import type { YearlyData } from '../../types/property';
 import { formatCurrency } from '../../lib/formatters';
+import { useChartTheme } from '../../hooks/useChartTheme';
 
 interface WealthBreakdownChartProps {
   data: YearlyData[];
 }
 
 export function WealthBreakdownChart({ data }: WealthBreakdownChartProps) {
+  const theme = useChartTheme();
   const chartData = data
     .filter((_, index) => index % Math.max(1, Math.floor(data.length / 10)) === 0 || index === data.length - 1)
     .map((year) => {
@@ -38,24 +40,21 @@ export function WealthBreakdownChart({ data }: WealthBreakdownChartProps) {
     <div className="h-96">
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke={theme.grid.stroke} />
           <XAxis
             dataKey="year"
-            tick={{ fill: '#64748b', fontSize: 12 }}
-            tickLine={{ stroke: '#cbd5e1' }}
+            tick={theme.axis.tick}
+            tickLine={theme.axis.tickLine}
           />
           <YAxis
-            tick={{ fill: '#64748b', fontSize: 12 }}
-            tickLine={{ stroke: '#cbd5e1' }}
+            tick={theme.axis.tick}
+            tickLine={theme.axis.tickLine}
             tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
           />
           <Tooltip
-            contentStyle={{
-              backgroundColor: 'white',
-              border: '1px solid #e2e8f0',
-              borderRadius: '8px',
-              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-            }}
+            contentStyle={theme.tooltip.contentStyle}
+            labelStyle={theme.tooltip.labelStyle}
+            itemStyle={theme.tooltip.itemStyle}
             formatter={(value: number, name: string) => {
               // Show actual cash flow value in tooltip instead of positive/negative split
               if (name === 'Positive Cash Flow' || name === 'Negative Cash Flow') {
@@ -67,28 +66,28 @@ export function WealthBreakdownChart({ data }: WealthBreakdownChartProps) {
             labelFormatter={(label) => label}
           />
           <Legend
-            wrapperStyle={{ paddingTop: '20px' }}
+            wrapperStyle={theme.legend.wrapperStyle}
             iconType="square"
           />
-          <ReferenceLine y={0} stroke="#64748b" strokeDasharray="3 3" />
+          <ReferenceLine y={0} stroke={theme.referenceLine.stroke} strokeDasharray="3 3" />
 
           {/* Positive components stack up from zero */}
           <Bar
             dataKey="equity"
             stackId="positive"
-            fill="#3b82f6"
+            fill={theme.colors.primary}
             name="Equity"
           />
           <Bar
             dataKey="positiveCashFlow"
             stackId="positive"
-            fill="#10b981"
+            fill={theme.colors.success}
             name="Positive Cash Flow"
           />
           <Bar
             dataKey="taxSavings"
             stackId="positive"
-            fill="#8b5cf6"
+            fill={theme.colors.purple}
             name="Tax Savings"
             radius={[4, 4, 0, 0]}
           />
@@ -97,7 +96,7 @@ export function WealthBreakdownChart({ data }: WealthBreakdownChartProps) {
           <Bar
             dataKey="negativeCashFlow"
             stackId="negative"
-            fill="#ef4444"
+            fill={theme.colors.danger}
             name="Negative Cash Flow"
             radius={[0, 0, 4, 4]}
           />

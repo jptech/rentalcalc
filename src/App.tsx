@@ -8,6 +8,7 @@ import { FloatingActionButton } from './components/ui/FloatingActionButton';
 import type { QuickAction } from './components/ui/FloatingActionButton';
 import { ScenarioComparison } from './components/scenarios/ScenarioComparison';
 import { ScenarioManager } from './components/scenarios/ScenarioManager';
+import { WhatIfTool } from './components/tools/WhatIfTool';
 import { useCalculations } from './hooks/useCalculations';
 import { useToast } from './hooks/useToast';
 import { useScenarios } from './hooks/useScenarios';
@@ -198,6 +199,7 @@ function App() {
         resultsPanel={<ResultsPanel results={results} />}
       />
       <FloatingActionButton actions={quickActions} />
+      <WhatIfTool baseInputs={inputs} baseResults={results} />
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       {showManager && (

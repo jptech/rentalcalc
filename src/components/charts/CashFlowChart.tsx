@@ -14,12 +14,15 @@ import {
 } from 'recharts';
 import type { YearlyData } from '../../types/property';
 import { formatCurrency } from '../../lib/formatters';
+import { useChartTheme } from '../../hooks/useChartTheme';
 
 interface CashFlowChartProps {
   data: YearlyData[];
 }
 
 export function CashFlowChart({ data }: CashFlowChartProps) {
+  const theme = useChartTheme();
+
   const chartData = data.map((year) => ({
     year: `Year ${year.year}`,
     cashFlow: Math.round(year.cashFlow),
@@ -28,7 +31,7 @@ export function CashFlowChart({ data }: CashFlowChartProps) {
 
   // Custom bar color based on positive/negative
   const getBarColor = (value: number) => {
-    return value >= 0 ? '#10b981' : '#ef4444'; // green for positive, red for negative
+    return value >= 0 ? theme.colors.success : theme.colors.danger;
   };
 
   // Find when cash flow turns positive
@@ -38,45 +41,42 @@ export function CashFlowChart({ data }: CashFlowChartProps) {
     <div className="h-96">
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke={theme.grid.stroke} />
 
           {/* Zero line */}
-          <ReferenceLine y={0} stroke="#64748b" strokeDasharray="3 3" strokeWidth={1}>
-            <Label value="Break-even" position="insideTopRight" fill="#64748b" fontSize={12} />
+          <ReferenceLine y={0} stroke={theme.referenceLine.stroke} strokeDasharray="3 3" strokeWidth={1}>
+            <Label value="Break-even" position="insideTopRight" fill={theme.label.fill} fontSize={12} />
           </ReferenceLine>
 
           {/* Mark when cash flow turns positive */}
           {breakEvenYear > 0 && (
             <ReferenceLine
               x={chartData[breakEvenYear]?.year}
-              stroke="#10b981"
+              stroke={theme.colors.success}
               strokeDasharray="5 5"
               strokeWidth={2}
             >
-              <Label value="Cash Flow Positive" position="top" fill="#10b981" fontSize={12} />
+              <Label value="Cash Flow Positive" position="top" fill={theme.colors.success} fontSize={12} />
             </ReferenceLine>
           )}
           <XAxis
             dataKey="year"
-            tick={{ fill: '#64748b', fontSize: 12 }}
-            tickLine={{ stroke: '#cbd5e1' }}
+            tick={theme.axis.tick}
+            tickLine={theme.axis.tickLine}
           />
           <YAxis
-            tick={{ fill: '#64748b', fontSize: 12 }}
-            tickLine={{ stroke: '#cbd5e1' }}
+            tick={theme.axis.tick}
+            tickLine={theme.axis.tickLine}
             tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
           />
           <Tooltip
-            contentStyle={{
-              backgroundColor: 'white',
-              border: '1px solid #e2e8f0',
-              borderRadius: '8px',
-              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-            }}
+            contentStyle={theme.tooltip.contentStyle}
+            labelStyle={theme.tooltip.labelStyle}
+            itemStyle={theme.tooltip.itemStyle}
             formatter={(value: number) => [formatCurrency(value), '']}
           />
           <Legend
-            wrapperStyle={{ paddingTop: '20px' }}
+            wrapperStyle={theme.legend.wrapperStyle}
             iconType="square"
           />
           <Bar
@@ -94,10 +94,10 @@ export function CashFlowChart({ data }: CashFlowChartProps) {
           <Line
             type="monotone"
             dataKey="cumulativeCashFlow"
-            stroke="#3b82f6"
+            stroke={theme.colors.primary}
             strokeWidth={3}
             name="Cumulative Cash Flow"
-            dot={{ r: 4, fill: '#3b82f6' }}
+            dot={{ r: 4, fill: theme.colors.primary }}
           />
         </ComposedChart>
       </ResponsiveContainer>
