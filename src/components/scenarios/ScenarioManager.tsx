@@ -110,7 +110,7 @@ export function ScenarioManager({
               <Button
                 onClick={handleSaveNew}
                 disabled={!newScenarioName.trim()}
-                variant="success"
+                variant="primary"
               >
                 <Plus className="w-4 h-4 mr-1" />
                 Save

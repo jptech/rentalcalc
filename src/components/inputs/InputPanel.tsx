@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle } from '../ui/Card';
 import { Input, Select } from '../ui/Input';
 import { Slider } from '../ui/Slider';
 import { RangeInput } from '../ui/RangeInput';
-import type { PropertyInputs, PropertyType, RangeValue } from '../../types/property';
+import type { PropertyInputs, PropertyType } from '../../types/property';
 import { PROPERTY_DEFAULTS } from '../../types/property';
 
 interface InputPanelProps {

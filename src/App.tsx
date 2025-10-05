@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { Save, BarChart3, Folder, Download } from 'lucide-react';
+import { Folder, Download } from 'lucide-react';
 import { AppLayout } from './components/layout/AppLayout';
 import { InputPanel } from './components/inputs/InputPanel';
 import { ResultsPanel } from './components/layout/ResultsPanel';
