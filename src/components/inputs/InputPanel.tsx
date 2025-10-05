@@ -23,16 +23,21 @@ function CollapsibleSection({ title, children, defaultOpen = true }: Collapsible
     <div className="border-b border-slate-200 last:border-b-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between py-3 px-4 hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between py-3 px-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-200 group"
       >
-        <h4 className="text-sm font-semibold text-slate-900">{title}</h4>
+        <h4 className="text-sm font-semibold text-slate-900 group-hover:text-blue-700 transition-colors">{title}</h4>
         {isOpen ? (
-          <ChevronUp className="w-4 h-4 text-slate-500" />
+          <ChevronUp className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-slate-500" />
+          <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
         )}
       </button>
-      {isOpen && <div className="px-4 pb-4 space-y-4">{children}</div>}
+      {isOpen && (
+        <>
+          <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent mx-4" />
+          <div className="px-4 pb-4 pt-3 space-y-4">{children}</div>
+        </>
+      )}
     </div>
   );
 }

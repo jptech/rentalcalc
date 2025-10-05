@@ -39,8 +39,8 @@ export function MetricCard({
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow">
-      <div className={`h-1 bg-gradient-to-r ${variantStyles[variant]}`} />
+    <Card className="overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group">
+      <div className={`h-1 bg-gradient-to-r ${variantStyles[variant]} group-hover:h-1.5 transition-all`} />
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">

@@ -53,16 +53,26 @@ export function TabsTrigger({ value, children, className = '' }: TabsTriggerProp
   return (
     <button
       className={`
-        px-4 py-2 font-medium text-sm transition-all relative
+        px-4 py-2.5 font-medium text-sm transition-all relative group
         ${isActive
-          ? 'text-blue-600 border-b-2 border-blue-600'
-          : 'text-slate-600 hover:text-slate-900 border-b-2 border-transparent'
+          ? 'text-white'
+          : 'text-slate-600 hover:text-slate-900'
         }
         ${className}
       `}
       onClick={() => setActiveTab(value)}
     >
-      {children}
+      {/* Background gradient for active tab */}
+      {isActive && (
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-t-lg shadow-sm" />
+      )}
+
+      {/* Hover effect for inactive tabs */}
+      {!isActive && (
+        <div className="absolute inset-0 bg-slate-100 opacity-0 group-hover:opacity-100 rounded-t-lg transition-opacity" />
+      )}
+
+      <span className="relative z-10">{children}</span>
     </button>
   );
 }
