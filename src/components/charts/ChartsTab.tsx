@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { Download } from 'lucide-react';
 import type { CalculationResults } from '../../types/property';
 import { CashFlowChart } from './CashFlowChart';
 import { EquityChart } from './EquityChart';
 import { ComparisonChart } from './ComparisonChart';
 import { WealthBreakdownChart } from './WealthBreakdownChart';
 import { Card, CardContent } from '../ui/Card';
+import { Button } from '../ui/Button';
+import { exportToCSV } from '../../lib/chartExport';
 
 interface ChartsTabProps {
   results: CalculationResults;
@@ -22,23 +25,67 @@ export function ChartsTab({ results }: ChartsTabProps) {
     { id: 'breakdown', label: 'Wealth Breakdown' },
   ];
 
+  const handleExport = () => {
+    const chartDataMap = {
+      cashflow: results.yearlyData.map(d => ({
+        Year: d.year,
+        'Cash Flow': d.cashFlow,
+        'Cumulative Cash Flow': d.cumulativeCashFlow,
+      })),
+      equity: results.yearlyData.map(d => ({
+        Year: d.year,
+        'Property Value': d.propertyValue,
+        'Loan Balance': d.loanBalance,
+        'Equity': d.equity,
+      })),
+      comparison: results.opportunityCost.holdScenario.yearlyWealth.map((wealth, i) => ({
+        Year: i + 1,
+        'Hold Property': wealth,
+        'Sell & Invest': results.opportunityCost.sellScenario.yearlyWealth[i],
+      })),
+      breakdown: results.yearlyData.map(d => ({
+        Year: d.year,
+        'Equity': d.equity,
+        'Cumulative Cash Flow': d.cumulativeCashFlow,
+        'Tax Savings': d.cumulativeTaxSavings,
+      })),
+    };
+
+    const activeChartData = chartDataMap[activeChart];
+    const chartLabel = charts.find(c => c.id === activeChart)?.label || 'chart';
+
+    exportToCSV(activeChartData, `${chartLabel.toLowerCase().replace(/ /g, '-')}-data`);
+  };
+
   return (
     <div className="space-y-4">
-      {/* Chart Selector */}
-      <div className="flex flex-wrap gap-2">
-        {charts.map((chart) => (
-          <button
-            key={chart.id}
-            onClick={() => setActiveChart(chart.id)}
-            className={`px-4 py-2 rounded-lg font-medium transition-all ${
-              activeChart === chart.id
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
-            }`}
-          >
-            {chart.label}
-          </button>
-        ))}
+      {/* Chart Selector with Export */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-2">
+          {charts.map((chart) => (
+            <button
+              key={chart.id}
+              onClick={() => setActiveChart(chart.id)}
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                activeChart === chart.id
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+              }`}
+            >
+              {chart.label}
+            </button>
+          ))}
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleExport}
+          className="flex items-center gap-2"
+        >
+          <Download className="w-4 h-4" />
+          Export CSV
+        </Button>
       </div>
 
       {/* Chart Display */}

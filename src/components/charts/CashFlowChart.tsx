@@ -9,6 +9,8 @@ import {
   Legend,
   ResponsiveContainer,
   Cell,
+  ReferenceLine,
+  Label,
 } from 'recharts';
 import type { YearlyData } from '../../types/property';
 import { formatCurrency } from '../../lib/formatters';
@@ -29,11 +31,31 @@ export function CashFlowChart({ data }: CashFlowChartProps) {
     return value >= 0 ? '#10b981' : '#ef4444'; // green for positive, red for negative
   };
 
+  // Find when cash flow turns positive
+  const breakEvenYear = chartData.findIndex(d => d.cashFlow > 0);
+
   return (
     <div className="h-96">
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+
+          {/* Zero line */}
+          <ReferenceLine y={0} stroke="#64748b" strokeDasharray="3 3" strokeWidth={1}>
+            <Label value="Break-even" position="insideTopRight" fill="#64748b" fontSize={12} />
+          </ReferenceLine>
+
+          {/* Mark when cash flow turns positive */}
+          {breakEvenYear > 0 && (
+            <ReferenceLine
+              x={chartData[breakEvenYear]?.year}
+              stroke="#10b981"
+              strokeDasharray="5 5"
+              strokeWidth={2}
+            >
+              <Label value="Cash Flow Positive" position="top" fill="#10b981" fontSize={12} />
+            </ReferenceLine>
+          )}
           <XAxis
             dataKey="year"
             tick={{ fill: '#64748b', fontSize: 12 }}

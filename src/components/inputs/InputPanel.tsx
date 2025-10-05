@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '../ui/Card';
 import { Input, Select } from '../ui/Input';
+import { Slider } from '../ui/Slider';
 import type { PropertyInputs, PropertyType } from '../../types/property';
 import { PROPERTY_DEFAULTS } from '../../types/property';
 
@@ -132,14 +133,24 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
                 tooltip="Initial cash investment"
               />
 
-              <Input
-                label="Down Payment %"
-                type="number"
-                suffix="%"
-                value={inputs.downPaymentPercent.toFixed(1)}
-                onChange={(e) => updateInput('downPaymentPercent', parseFloat(e.target.value) || 0)}
-                helpText={`Loan amount: $${(inputs.propertyValue - inputs.downPayment).toLocaleString()}`}
-              />
+              <div className="space-y-2">
+                <Input
+                  label="Down Payment %"
+                  type="number"
+                  suffix="%"
+                  value={inputs.downPaymentPercent.toFixed(1)}
+                  onChange={(e) => updateInput('downPaymentPercent', parseFloat(e.target.value) || 0)}
+                  helpText={`Loan amount: $${(inputs.propertyValue - inputs.downPayment).toLocaleString()}`}
+                />
+                <Slider
+                  value={inputs.downPaymentPercent}
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  onChange={(val) => updateInput('downPaymentPercent', val)}
+                  showValue={false}
+                />
+              </div>
 
               <Input
                 label="Interest Rate"
@@ -260,16 +271,26 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
                 tooltip="Expected monthly rental income"
               />
 
-              <Input
-                label="Vacancy Rate"
-                type="number"
-                step="0.1"
-                suffix="%"
-                value={inputs.vacancyRate}
-                onChange={(e) => updateInput('vacancyRate', parseFloat(e.target.value) || 0)}
-                tooltip="Expected vacancy percentage per year"
-                helpText={`$${((inputs.monthlyRent * 12 * inputs.vacancyRate) / 100).toLocaleString()} annual loss`}
-              />
+              <div className="space-y-2">
+                <Input
+                  label="Vacancy Rate"
+                  type="number"
+                  step="0.1"
+                  suffix="%"
+                  value={inputs.vacancyRate}
+                  onChange={(e) => updateInput('vacancyRate', parseFloat(e.target.value) || 0)}
+                  tooltip="Expected vacancy percentage per year"
+                  helpText={`$${((inputs.monthlyRent * 12 * inputs.vacancyRate) / 100).toLocaleString()} annual loss`}
+                />
+                <Slider
+                  value={inputs.vacancyRate}
+                  min={0}
+                  max={20}
+                  step={0.5}
+                  onChange={(val) => updateInput('vacancyRate', val)}
+                  showValue={false}
+                />
+              </div>
 
               <Input
                 label="Other Income"

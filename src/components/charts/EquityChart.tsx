@@ -6,6 +6,8 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  ReferenceLine,
+  Label,
 } from 'recharts';
 import type { YearlyData } from '../../types/property';
 import { formatCurrency } from '../../lib/formatters';
@@ -17,15 +19,30 @@ interface EquityChartProps {
 export function EquityChart({ data }: EquityChartProps) {
   const chartData = data.map((year) => ({
     year: `Year ${year.year}`,
+    yearNum: year.year,
     propertyValue: Math.round(year.propertyValue),
     loanBalance: Math.round(year.loanBalance),
     equity: Math.round(year.equity),
   }));
 
+  // Find when mortgage is paid off (loan balance becomes 0)
+  const payoffYear = chartData.find(d => d.loanBalance === 0);
+
   return (
     <div className="h-96">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+          {/* Mortgage paid off marker */}
+          {payoffYear && (
+            <ReferenceLine
+              x={payoffYear.year}
+              stroke="#10b981"
+              strokeDasharray="5 5"
+              strokeWidth={2}
+            >
+              <Label value="Mortgage Paid Off" position="top" fill="#10b981" fontSize={12} />
+            </ReferenceLine>
+          )}
           <defs>
             <linearGradient id="colorPropertyValue" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />

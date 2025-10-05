@@ -1,6 +1,7 @@
 import { DollarSign, TrendingUp, Home, Scale, AlertTriangle } from 'lucide-react';
 import type { CalculationResults } from '../../types/property';
 import { MetricCard } from './MetricCard';
+import { Gauge } from '../ui/Gauge';
 import { formatCurrency, formatPercent } from '../../lib/formatters';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/Card';
 
@@ -56,13 +57,15 @@ export function InsightsTab({ results }: InsightsTabProps) {
           icon={TrendingUp}
           variant={returnMetrics.cashOnCashReturn >= 8 ? 'success' : returnMetrics.cashOnCashReturn >= 4 ? 'default' : 'warning'}
         >
-          <div className="text-xs text-slate-600">
-            <div>Year 1 cash flow: {formatCurrency(firstYear.cashFlow)}</div>
-            <div className="mt-1 text-slate-500">
-              {returnMetrics.cashOnCashReturn >= 8 && '✓ Excellent return'}
-              {returnMetrics.cashOnCashReturn >= 4 && returnMetrics.cashOnCashReturn < 8 && '○ Good return'}
-              {returnMetrics.cashOnCashReturn < 4 && '⚠ Below typical target (8%+)'}
+          <div className="space-y-3">
+            <div className="text-xs text-slate-600">
+              <div>Year 1 cash flow: {formatCurrency(firstYear.cashFlow)}</div>
             </div>
+            <Gauge
+              value={returnMetrics.cashOnCashReturn}
+              target={12}
+              label="vs 12% target"
+            />
           </div>
         </MetricCard>
 
