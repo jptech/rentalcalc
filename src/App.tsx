@@ -7,6 +7,7 @@ import { ToastContainer } from './components/ui/Toast';
 import { FloatingActionButton } from './components/ui/FloatingActionButton';
 import type { QuickAction } from './components/ui/FloatingActionButton';
 import { ScenarioComparison } from './components/scenarios/ScenarioComparison';
+import { ScenarioManager } from './components/scenarios/ScenarioManager';
 import { useCalculations } from './hooks/useCalculations';
 import { useToast } from './hooks/useToast';
 import { useScenarios } from './hooks/useScenarios';
@@ -21,10 +22,11 @@ const STORAGE_KEY = 'rental-calc-inputs';
 
 function App() {
   const { toasts, removeToast, showSuccess, showInfo } = useToast();
-  const { scenarios, saveScenario } = useScenarios();
+  const { scenarios, saveScenario, updateScenario, deleteScenario } = useScenarios();
   const saveTimeoutRef = useRef<number | undefined>(undefined);
   const [hasInitialized, setHasInitialized] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
+  const [showManager, setShowManager] = useState(false);
   const [selectedScenarios, setSelectedScenarios] = useState<string[]>([]);
 
   // Initialize state from localStorage or defaults
@@ -108,49 +110,9 @@ function App() {
   // Quick actions for FAB
   const quickActions: QuickAction[] = [
     {
-      icon: Save,
-      label: 'Save Scenario',
-      onClick: () => {
-        const name = prompt('Enter scenario name:');
-        if (name) {
-          saveScenario(name, inputs);
-          showSuccess(`Saved scenario: ${name}`);
-        }
-      },
-      variant: 'success',
-    },
-    {
       icon: Folder,
-      label: 'Load Scenario',
-      onClick: () => {
-        if (scenarios.length === 0) {
-          showInfo('No saved scenarios');
-          return;
-        }
-        const scenarioList = scenarios.map((s, i) => `${i + 1}. ${s.name}`).join('\n');
-        const choice = prompt(`Select scenario:\n${scenarioList}\n\nEnter number:`);
-        if (choice) {
-          const index = parseInt(choice) - 1;
-          const scenario = scenarios[index];
-          if (scenario) {
-            setInputs(scenario.inputs);
-            showSuccess(`Loaded: ${scenario.name}`);
-          }
-        }
-      },
-    },
-    {
-      icon: BarChart3,
-      label: 'Compare Scenarios',
-      onClick: () => {
-        if (scenarios.length < 2) {
-          showInfo('Need at least 2 saved scenarios to compare');
-          return;
-        }
-        // For now, compare all scenarios
-        setSelectedScenarios(scenarios.map(s => s.id));
-        setShowComparison(true);
-      },
+      label: 'Manage Scenarios',
+      onClick: () => setShowManager(true),
       variant: 'primary',
     },
     {
@@ -212,6 +174,22 @@ function App() {
       .filter(Boolean) as Array<{ scenario: any; results: any }>;
   }, [selectedScenarios, scenarios]);
 
+  const handleLoadScenario = useCallback((scenario: { inputs: PropertyInputs; name: string }) => {
+    setInputs(scenario.inputs);
+    setShowManager(false);
+    showSuccess(`Loaded: ${scenario.name}`);
+  }, [showSuccess]);
+
+  const handleSaveScenario = useCallback((name: string, inputs: PropertyInputs) => {
+    saveScenario(name, inputs);
+    showSuccess(`Saved scenario: ${name}`);
+  }, [saveScenario, showSuccess]);
+
+  const handleCompareScenarios = useCallback((scenarioIds: string[]) => {
+    setSelectedScenarios(scenarioIds);
+    setShowComparison(true);
+  }, []);
+
   return (
     <>
       <AppLayout
@@ -221,6 +199,19 @@ function App() {
       />
       <FloatingActionButton actions={quickActions} />
       <ToastContainer toasts={toasts} onRemove={removeToast} />
+
+      {showManager && (
+        <ScenarioManager
+          scenarios={scenarios}
+          currentInputs={inputs}
+          onClose={() => setShowManager(false)}
+          onSave={handleSaveScenario}
+          onUpdate={updateScenario}
+          onDelete={deleteScenario}
+          onLoad={handleLoadScenario}
+          onCompare={handleCompareScenarios}
+        />
+      )}
 
       {showComparison && (
         <ScenarioComparison
